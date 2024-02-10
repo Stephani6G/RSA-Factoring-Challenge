@@ -4,35 +4,39 @@ import math
 
 # function that defines numbers prime and co prime
 
-
 def factors(number):
     factors_list = []
 
+    if number < 2:
+        print(f"Error: Number {number} is not greater than 1.")
+        return
+
     if number % 2 == 0:
-        factors_list.append(2)
-        factors_list.append(number // 2)
+        factors_list.extend([2, number // 2])
     else:
         for i in range(3, int(math.sqrt(number)) + 1, 2):
             if number % i == 0:
-                factors_list.append(i)
-                factors_list.append(number // i)
+                factors_list.extend([i, number // i])
                 break
 
-    print("{}={}*{}".format(number, factors_list[1], factors_list[0]))
+    if not factors_list:
+        factors_list.extend([number, 1])
 
-# function to handle errors
+    print(f"{number}={factors_list[1]}*{factors_list[0]}")
 
+# handles errors`
 
 def main(filename):
     try:
         with open(filename, 'r') as file:
             for line in file:
-                number = int(line.strip())
-                factors(number)
+                try:
+                    number = int(line.strip())
+                    factors(number)
+                except ValueError:
+                    print(f"Error: '{line.strip()}' is not a valid number.")
     except FileNotFoundError:
         print(f"Error: File '{filename}' not found.")
-    except ValueError:
-        print("Error: Invalid input in the file.")
 
 
 if __name__ == "__main__":
