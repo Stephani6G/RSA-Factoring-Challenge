@@ -1,77 +1,34 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 
-import random
-import math
 import sys
+import math
+filename = sys.argv[1]
+
+# define numbers
 
 
-def generates_p_and_q():
-    numbers = [i for i in range(2, 100000001)]
+def factors(number):
+    factors = []
 
-    for n in range(2, 1000000001):
-        for i in range(2, math.ceil(n/2) + 1):
-            if n % i == 0:
-                numbers.remove(n)
+    if number % 2 == 0:
+        factors.append(2)
+        factors.append(number // 2)
+    else:
+        for i in range(3, int(math.sqrt(number)) + 1, 2):
+            if number % i == 0:
+                factors.append(i)
+                factors.append(number // i)
                 break
 
-    # Selecting any 2 prime numbers randomly
-    p = random.choice(numbers)
-    numbers.remove(p)
-    q = random.choice(numbers)
+    print("{}={}*{}".format(number, factors[1], factors[0]))
 
-    return p, q
+# max prime
 
 
-def generates_encryption(phi):
-    possible_e_values = []
-
-    for i in range(2, phi):
-        if math.gcd(i, phi) == 1:
-            e = i
-            possible_e_values.append(e)
-
-    return random.choice(possible_e_values)
-
-
-def generates_decryption(e, phi):
-    for i in range(2, phi):
-        if (i * e) % phi == 1:  # ed mod(phi) = 1
-            d = i
-            break
-
-    return d
-
-
-def encrypt(msg, e, n):
-    # (msg^e) mod n
-    c = pow(msg, e, n)
-    return c
-
-
-def decrypt(msg, d, n):
-    # (msg^d) mod n
-    p = pow(msg, d, n)
-    return p
-
-
-p, q = generates_p_and_q()
-print(f'[+] p = {p} and q = {q}')
-
-n = p * q
-phi = (p - 1) * (q - 1)
-print(f'[+] n = {n} and euler totient = {phi}')
-
-e = generates_encryption(phi)
-print(f'[+] e = {e}')
-
-d = generates_decryption(e, phi)
-print(f'[+] d = {d}')
-
-msg = random.randint(1, n)
-print(f'[+] msg : {msg}')
-
-e_msg = encrypt(msg, e, n)
-print(f'[+] Encrypted msg : {e_msg}')
-
-d_msg = decrypt(e_msg, d, n)
-print(f'[+] Decrypted msg : {d_msg}')
+with open(filename, 'r') as file:
+    line = file.readline()
+    i = 1
+    while line:
+        factors(int(line.strip()))
+        line = file.readline()
+        i += 1
