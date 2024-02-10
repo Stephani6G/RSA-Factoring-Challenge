@@ -1,35 +1,43 @@
-#!/usr/bin/env python3
-
+#!/usr/bin/python3
 import sys
-import random
+import math
 
-# define function
-
-
-def factorizes_numbers(n):
-    factor = []
-    for i in range(2, int(n ** 0.5) + 1):
-        while n % i == 0:
-            factor.append(i)
-            n //= i
-    if n > 1:
-        factor.append(n)
-    return factor
-
-# define function
+# function that defines numbers prime and co prime
 
 
-def main(filena):
-    with open(filena, 'r') as file:
-        for line in file:
-            numbers = int(line.strip())
-            factor = factorizes_numbers(numbers)
-            print(f"{numbers}={'*'.join(map(str, factor))}")
+def factors(number):
+    factors_list = []
+
+    if number % 2 == 0:
+        factors_list.append(2)
+        factors_list.append(number // 2)
+    else:
+        for i in range(3, int(math.sqrt(number)) + 1, 2):
+            if number % i == 0:
+                factors_list.append(i)
+                factors_list.append(number // i)
+                break
+
+    print("{}={}*{}".format(number, factors_list[1], factors_list[0]))
+
+# function to handle errors
+
+
+def main(filename):
+    try:
+        with open(filename, 'r') as file:
+            for line in file:
+                number = int(line.strip())
+                factors(number)
+    except FileNotFoundError:
+        print(f"Error: File '{filename}' not found.")
+    except ValueError:
+        print("Error: Invalid input in the file.")
 
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: factors <file>")
+        print("Usage: factors.py <file>")
         sys.exit(1)
-    filena = sys.argv[1]
-    main(filena)
+    filename = sys.argv[1]
+    main(filename)
